@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+function tt() { MTTY="$1"; shift; tmux send-keys -t "${MTTY}" "$@" Enter; }
+
+f=$(basename "$1")
+
+tt 0 "rm -rf ./${f}"
+base64 "$1" | while read l; do
+	tt 0 ' echo "'${l}'" >> '${f}.b64
+done
+
+tt 0 "base64 -d ./${f}.b64 > ./${f}"
+tt 0 "rm -rf ./${f}.b64"
+tt 0 'chmod 777 *'
